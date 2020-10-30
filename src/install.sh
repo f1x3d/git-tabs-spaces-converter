@@ -1,16 +1,36 @@
 #!/bin/bash 
 
+IS_WINDOWS=0
+IS_MACOS=0
+
+case "$OSTYPE" in
+    darwin*)  IS_MACOS=1   ;;
+    win*)     IS_WINDOWS=1 ;;
+    msys*)    IS_WINDOWS=1 ;;
+    cygwin*)  IS_WINDOWS=1 ;;
+esac
+
 # Copy dependencies
 
-SOURCE_PATH=$(dirname "$BASH_SOURCE")
-TARGET_PATH=$(realpath .git/tabs-spaces-converter/)
+if [ $IS_WINDOWS -eq 1 ]; then
+    SOURCE_PATH=$(dirname "$BASH_SOURCE")
+    TARGET_PATH=$(realpath .git/tabs-spaces-converter/)
 
-cp -a "$SOURCE_PATH/../lib/." "$TARGET_PATH"
+    cp -a "$SOURCE_PATH/../lib/." "$TARGET_PATH"
+fi
 
 # Set git filters
 
-TABS_TO_SPACES="\"$TARGET_PATH/expand\" --tabs=4 --initial"
-SPACES_TO_TABS="\"$TARGET_PATH/unexpand\" --tabs=4 --first-only"
+if [ $IS_WINDOWS -eq 1 ]; then
+    TABS_TO_SPACES="\"$TARGET_PATH/expand\" --tabs=4 --initial"
+    SPACES_TO_TABS="\"$TARGET_PATH/unexpand\" --tabs=4 --first-only"
+elif [ $IS_MACOS -eq 1 ]; then
+    TABS_TO_SPACES="gexpand --tabs=4 --initial"
+    SPACES_TO_TABS="gunexpand --tabs=4 --first-only"
+else
+    TABS_TO_SPACES="expand --tabs=4 --initial"
+    SPACES_TO_TABS="unexpand --tabs=4 --first-only"
+fi
 
 if [ "$1" = "tabs" ]; then
     SMUDGE=$SPACES_TO_TABS

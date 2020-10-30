@@ -1,8 +1,18 @@
 #!/bin/bash 
 
+IS_WINDOWS=0
+
+case "$OSTYPE" in
+    win*)     IS_WINDOWS=1 ;;
+    msys*)    IS_WINDOWS=1 ;;
+    cygwin*)  IS_WINDOWS=1 ;;
+esac
+
 # Remove dependencies
 
-rm -rf .git/tabs-spaces-converter/
+if [ $IS_WINDOWS -eq 1 ]; then
+    rm -rf .git/tabs-spaces-converter/
+fi
 
 # Remove git filters config
 
