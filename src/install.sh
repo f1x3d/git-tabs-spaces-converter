@@ -21,15 +21,24 @@ fi
 
 # Set git filters
 
+TAB_SIZE=4
+
+if ! [ -z "$2" ]; then
+    TAB_SIZE=$2
+fi
+
+EXPAND_ARGS="--tabs=$TAB_SIZE --initial"
+UNEXPAND_ARGS="--tabs=$TAB_SIZE --first-only"
+
 if [ $IS_WINDOWS -eq 1 ]; then
-    TABS_TO_SPACES="\"$TARGET_PATH/expand\" --tabs=4 --initial"
-    SPACES_TO_TABS="\"$TARGET_PATH/unexpand\" --tabs=4 --first-only"
+    TABS_TO_SPACES="\"$TARGET_PATH/expand\" $EXPAND_ARGS"
+    SPACES_TO_TABS="\"$TARGET_PATH/unexpand\" $UNEXPAND_ARGS"
 elif [ $IS_MACOS -eq 1 ]; then
-    TABS_TO_SPACES="gexpand --tabs=4 --initial"
-    SPACES_TO_TABS="gunexpand --tabs=4 --first-only"
+    TABS_TO_SPACES="gexpand $EXPAND_ARGS"
+    SPACES_TO_TABS="gunexpand $UNEXPAND_ARGS"
 else
-    TABS_TO_SPACES="expand --tabs=4 --initial"
-    SPACES_TO_TABS="unexpand --tabs=4 --first-only"
+    TABS_TO_SPACES="expand $EXPAND_ARGS"
+    SPACES_TO_TABS="unexpand $UNEXPAND_ARGS"
 fi
 
 if [ "$1" = "tabs" ]; then
